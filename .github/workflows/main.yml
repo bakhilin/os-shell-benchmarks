@@ -1,0 +1,31 @@
+name: os-shell-benchmarks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install clang-format and cppcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format cppcheck
+
+      - name: Run clang-format
+        run: |
+          clang-format -i *.c *.h
+          git diff --exit-code || echo "Code is not formatted correctly."
+
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all --inconclusive .
