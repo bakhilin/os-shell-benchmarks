@@ -9,7 +9,7 @@
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
 #define EXIT_CODE "exit\n"
-#define SHELL_PRINT printf("\nbakhilin@shell:")
+#define SHELL_PRINT printf("bakhilin@shell:")
 
 void start(){
     char cmd[MAX_CMD_LEN];
@@ -40,7 +40,7 @@ void exec_cmd(char * cmd) {
     }
 
     // create new process 
-    pid = fork();
+    pid = fork();   
     if (pid == -1)
     {
         perror("fork failed");

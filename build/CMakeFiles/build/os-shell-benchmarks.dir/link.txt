@@ -1,0 +1,1 @@
+/usr/bin/gcc -g -rdynamic "CMakeFiles/build/os-shell-benchmarks.dir/source/main.o" "CMakeFiles/build/os-shell-benchmarks.dir/source/utils.o" -o build/os-shell-benchmarks

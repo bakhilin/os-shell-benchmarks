@@ -1,0 +1,3 @@
+/home/bakhilin/Desktop/os/lab1/CMakeFiles/build/os-shell-benchmarks.dir
+/home/bakhilin/Desktop/os/lab1/CMakeFiles/edit_cache.dir
+/home/bakhilin/Desktop/os/lab1/CMakeFiles/rebuild_cache.dir
