@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up C++ environment
-      uses: actions/cpp@v1
+      uses: bakhilin/setup-cpp@v1
       with:
         gcc-version: '12.3.0'  # Замените на нужную версию GCC
         gpp-version: '12.3.0'   # Замените на нужную версию G++
