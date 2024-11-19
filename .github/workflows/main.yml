@@ -34,4 +34,4 @@ jobs:
     - name: Run tests
       run: |
         cd build
-        ./test_sort # Замените на имя вашего исполняемого файла для тестов
+        ./test_sort 
