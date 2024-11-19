@@ -16,8 +16,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Install C++
       run: |
-      sudo npx setup-cpp --compiler llvm --cmake true --ninja true --ccache true --vcpkg true
-      source ~/.cpprc # activate cpp environment variables
+        sudo npx setup-cpp --compiler llvm --cmake true --ninja true --ccache true --vcpkg true
+        source ~/.cpprc # activate cpp environment variables
 
     - name: Set up C++ environment
       uses: actions/setup-cpp@v1
