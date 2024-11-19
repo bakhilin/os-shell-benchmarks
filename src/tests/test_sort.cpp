@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "sort.h"
+#include "../include/sort.h"
 
 #define ARRAY_SIZE 100
 

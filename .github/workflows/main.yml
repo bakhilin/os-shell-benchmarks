@@ -28,9 +28,9 @@ jobs:
     - name: Build
       run: |
         mkdir build
-        g++ -o test_sort src/sort.c  src/test_sort.cpp -lgtest -lgtest_main -pthread
+        g++ -o test_sort src/c/sort.c  src/tests/test_sort.cpp -lgtest -lgtest_main -pthread
         mv test_sort build/
-        g++ -o test_search_str src/test_search_str.cpp -lpthread -lgtest -lgtest_main -pthread
+        g++ -o test_search_str src/tests/test_search_str.cpp -lpthread -lgtest -lgtest_main -pthread
         mv test_search_str build/
 
     - name: Run tests

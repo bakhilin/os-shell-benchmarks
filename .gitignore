@@ -6,5 +6,5 @@ CMakeFiles
 build
 test_sort
 bench
-./a.out
+*.out
 ./shell
