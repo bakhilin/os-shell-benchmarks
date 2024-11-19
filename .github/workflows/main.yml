@@ -30,8 +30,12 @@ jobs:
         mkdir build
         g++ -o test_sort src/sort.c  src/test_sort.cpp -lgtest -lgtest_main -pthread
         mv test_sort build/
+        mv test_search_str src/test_search_str.cpp -lpthread -lgtest -lgtest_main -pthread
 
     - name: Run tests
       run: |
         cd build
+        echo "TESTING SORT BENCH"
         ./test_sort 
+        echo "TESTING SEARCH STRING BENCH"
+        ./test_search_str
