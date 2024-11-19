@@ -1,8 +1,10 @@
 cmake*
 CMakeCache.txt
 Makefile
-script.sh
+./script.sh
 CMakeFiles
 build
 test_sort
 bench
+./a.out
+./shell
