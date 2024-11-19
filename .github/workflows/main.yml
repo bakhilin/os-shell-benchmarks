@@ -14,9 +14,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Install C++
+      run: |
+      sudo npx setup-cpp --compiler llvm --cmake true --ninja true --ccache true --vcpkg true
+      source ~/.cpprc # activate cpp environment variables
 
     - name: Set up C++ environment
-      uses: bakhilin/setup-cpp@v1
+      uses: actions/setup-cpp@v1
       with:
         gcc-version: '12.3.0'  # Замените на нужную версию GCC
         gpp-version: '12.3.0'   # Замените на нужную версию G++
