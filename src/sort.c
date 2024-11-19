@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "sort.h"
 
 #define ARRAY_SIZE 100
+
 
 void print_arr(int arr[]){
     for (size_t i = 0; i < ARRAY_SIZE; i++)
@@ -20,8 +22,8 @@ void merge(int arr[], int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
-    int* L = malloc(n1 * sizeof(int));
-    int* R = malloc(n2 * sizeof(int));
+    int* L = (int*)malloc(n1 * sizeof(int));
+    int* R = (int*)malloc(n2 * sizeof(int));
 
     for (i = 0; i < n1; i++)
         L[i] = arr[left + i];
@@ -75,7 +77,7 @@ void* sort_load(void* arg) {
     int repetitions = *((int*)arg);
     
     for (int r = 0; r < repetitions; r++) {
-        int* arr = malloc(ARRAY_SIZE * sizeof(int));
+        int* arr = (int*)malloc(ARRAY_SIZE * sizeof(int));
         
         // Инициализация массива случайными числами
         for (int i = 0; i < ARRAY_SIZE; i++) {
@@ -88,22 +90,17 @@ void* sort_load(void* arg) {
     return NULL;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <number_of_repetitions>n", argv[0]);
-        return 1;
-    }
-
-    int repetitions = atoi(argv[1]);
+void start_bench(int reps) {
     pthread_t threads[6]; 
 
     for (int i = 0; i < 4; i++) {
-        pthread_create(&threads[i], NULL, sort_load, &repetitions);
+        pthread_create(&threads[i], NULL, sort_load, &reps);
     }
 
     for (int i = 0; i < 4; i++) {
         pthread_join(threads[i], NULL);
     }
 
-    return 0;
 }
+
+

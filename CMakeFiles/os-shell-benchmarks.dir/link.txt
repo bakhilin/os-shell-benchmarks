@@ -1,1 +1,0 @@
-/usr/bin/cc -rdynamic "CMakeFiles/os-shell-benchmarks.dir/source/main.o" "CMakeFiles/os-shell-benchmarks.dir/source/utils.o" -o os-shell-benchmarks

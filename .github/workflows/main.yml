@@ -1,31 +1,36 @@
-name: os-shell-benchmarks
+name: C++ CI
 
-on:
+on: 
   push:
-    branches:
-      - main
+    branches: [ main ] 
   pull_request:
-    branches:
-      - main
+    branches: [ main ] 
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install clang-format and cppcheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang-format cppcheck
+    - name: Set up C++ environment
+      uses: actions/setup-cpp@v1
+      with:
+        gcc-version: '12.3.0'  # Замените на нужную версию GCC
+        gpp-version: '12.3.0'   # Замените на нужную версию G++
 
-      - name: Run clang-format
-        run: |
-          clang-format -i *.c *.h
-          git diff --exit-code || echo "Code is not formatted correctly."
+    - name: Install dependencies
+      run: sudo apt-get install -y g++ make
 
-      - name: Run cppcheck
-        run: |
-          cppcheck --enable=all --inconclusive .
+    - name: Build
+      run: |
+        mkdir build
+        g++ -o test_sort src/sort.c  src/test_sort.cpp -lgtest -lgtest_main -pthread
+        mv test_sort build/
+
+    - name: Run tests
+      run: |
+        cd build
+        ./test_sort # Замените на имя вашего исполняемого файла для тестов
