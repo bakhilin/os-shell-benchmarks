@@ -19,7 +19,7 @@ void print_arr(int arr[]){
 
 void merge(int arr[], int left, int mid, int right) {
     int i, j, k;
-    int n1 = mid + left + 1; // test
+    int n1 = mid - left + 1; // test
     int n2 = right - mid;
 
     int* L = (int*)malloc(n1 * sizeof(int));
