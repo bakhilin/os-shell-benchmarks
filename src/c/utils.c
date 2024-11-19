@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
-#include "utils.h"
+#include "../include/utils.h"
 
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
