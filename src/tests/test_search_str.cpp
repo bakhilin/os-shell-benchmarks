@@ -42,6 +42,8 @@ protected:
         }
     }
 };
+ 
+
 
 // Тест на успешный поиск
 TEST_F(SearchLoadTest, TestSearchLoadSuccess) {
