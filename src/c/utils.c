@@ -9,7 +9,6 @@
 
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
-#define EXIT_CODE "exit\n"
 
 
 void start(){
@@ -21,7 +20,7 @@ void start(){
         if(fgets(cmd, sizeof(cmd), stdin)==NULL) {
             break;
         } else {
-            if (strcmp(cmd, EXIT_CODE) == 0) {
+            if (strcmp(cmd, "exit\n") == 0) {
                 break;
             }
             exec_cmd(cmd);
