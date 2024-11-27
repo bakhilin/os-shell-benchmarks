@@ -10,13 +10,14 @@
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
 #define EXIT_CODE "exit\n"
-#define SHELL_PRINT printf("bakhilin@shell:")
+
 
 void start(){
     char cmd[MAX_CMD_LEN];
     while (1)
     {
-        SHELL_PRINT;
+        printf("bakhilin@shell:");
+        
         if(fgets(cmd, sizeof(cmd), stdin)==NULL) {
             break;
         } else {
