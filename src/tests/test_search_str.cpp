@@ -8,7 +8,7 @@
 
 char *data[ARRAY_SIZE];
 
-// Функция, которую мы тестируем
+
 void* search_load(void* arg) {
     int repetitions = *((int*)arg);
     char target[STRING_LENGTH] = "target";

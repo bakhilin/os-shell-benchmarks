@@ -9,6 +9,11 @@
 
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
+#define STRING_LENGTH 20
+#define BLOCK_SIZE 4096
+#define ARRAY_SIZE 1000000
+
+char *data[ARRAY_SIZE];
 
 
 void start(){
@@ -65,4 +70,52 @@ void exec_cmd(char * cmd) {
 
 }  
 
+void* search_load(void* arg) {
+    int repetitions = *((int*)arg);
+    char target[STRING_LENGTH] = "target"; 
 
+    for (int r = 0; r < repetitions; r++) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            if (data[i] != NULL && strcmp(data[i], target) == 0) {
+                break;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+void fill_file(const char * filename) {
+    FILE * file = fopen(filename, "w");
+    if (file) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            fprintf(file, "string_%d\n", i);
+        }
+        fclose(file);
+    }
+
+}
+
+void load_data_from_file(const char * filename) {
+    FILE * file = fopen(filename, "r");
+    int index = 0;
+    char buffer[BLOCK_SIZE];
+
+    while (fgets(buffer, BLOCK_SIZE, file) != NULL && index < ARRAY_SIZE) {
+        char * line = strtok(buffer, "\n");
+        while (line != NULL && index < ARRAY_SIZE)
+        {
+            data[index] = (char*)malloc(STRING_LENGTH * sizeof(char));
+            if (data[index] == NULL) {
+                perror("Ошибка выделения памяти");
+                fclose(file);
+                exit(EXIT_FAILURE);
+            }
+            strncpy(data[index], line, STRING_LENGTH - 1);
+            data[index][STRING_LENGTH - 1] = '0';  
+            index++;
+            line = strtok(NULL, "\n");
+        }
+    }
+    fclose(file);
+}
