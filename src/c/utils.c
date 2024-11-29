@@ -6,15 +6,21 @@
 #include <sys/wait.h>
 #include <time.h>
 #include "../include/utils.h"
+#include <pthread.h>
 
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
 #define STRING_LENGTH 20
 #define BLOCK_SIZE 4096
-#define ARRAY_SIZE 1000000
+#define ARRAY_SIZE 10000000
+
+typedef struct {
+    char * block;
+    int block_size;
+    int repetitions;
+} ThreadData;
 
 char *data[ARRAY_SIZE];
-
 
 void start(){
     char cmd[MAX_CMD_LEN];
@@ -71,18 +77,19 @@ void exec_cmd(char * cmd) {
 }  
 
 void* search_load(void* arg) {
-    int repetitions = *((int*)arg);
+    ThreadData* data = (ThreadData*)arg;
     char target[STRING_LENGTH] = "target"; 
+    int found = 0; 
 
-    for (int r = 0; r < repetitions; r++) {
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            if (data[i] != NULL && strcmp(data[i], target) == 0) {
-                break;
-            }
+    for (int r = 0; r < data->repetitions; r++) {
+        if (strstr(data->block, target) != NULL) {
+            found = 1;
+            break;
         }
     }
 
-    return NULL;
+    free(data->block); 
+    return (void*)(__intptr_t)found;
 }
 
 void fill_file(const char * filename) {
@@ -96,26 +103,46 @@ void fill_file(const char * filename) {
 
 }
 
-void load_data_from_file(const char * filename) {
-    FILE * file = fopen(filename, "r");
-    int index = 0;
-    char buffer[BLOCK_SIZE];
 
-    while (fgets(buffer, BLOCK_SIZE, file) != NULL && index < ARRAY_SIZE) {
-        char * line = strtok(buffer, "\n");
-        while (line != NULL && index < ARRAY_SIZE)
+
+
+
+void load_data_from_file(const char * filename, int repetitions) {
+    FILE * file = fopen(filename, "r");
+    char buffer[BLOCK_SIZE];
+    pthread_t threads[6]; 
+    int thread_count = 0;
+
+    while (1)
+    {
+        size_t bytes_read = fread(buffer, sizeof(char), BLOCK_SIZE, file);
+        if (bytes_read == 0)
         {
-            data[index] = (char*)malloc(STRING_LENGTH * sizeof(char));
-            if (data[index] == NULL) {
-                perror("Ошибка выделения памяти");
-                fclose(file);
-                exit(EXIT_FAILURE);
+            break;
+        }
+
+        ThreadData * data = malloc(sizeof(ThreadData));
+        data->block = malloc((bytes_read+1) * sizeof(char));
+
+        memcpy(data->block, buffer, bytes_read);
+        data->block[bytes_read] = '0'; 
+        data->repetitions = repetitions;
+
+        pthread_create(&threads[thread_count++], NULL, search_load, data);
+        if (thread_count >= 6) {
+            for (int i = 0; i < thread_count; i++) {
+                void* result;
+                pthread_join(threads[i], &result);
             }
-            strncpy(data[index], line, STRING_LENGTH - 1);
-            data[index][STRING_LENGTH - 1] = '0';  
-            index++;
-            line = strtok(NULL, "\n");
+            thread_count = 0; 
         }
     }
+
+    for (int i = 0; i < thread_count; i++) {
+        void* result;
+        pthread_join(threads[i], &result);
+    }
+
     fclose(file);
+    
 }

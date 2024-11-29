@@ -8,3 +8,6 @@ test_sort
 bench
 *.out
 ./shell
+data.txt
+build
+bench 

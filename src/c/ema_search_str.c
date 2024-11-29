@@ -13,18 +13,9 @@ int main(int argc, char *argv[]) {
     int repetitions = atoi(argv[1]);  
     const char *filename = argv[2];  
     
-    fill_file(filename); 
-    load_data_from_file(filename); 
-
-    pthread_t threads[6]; 
-
-    for (int i = 0; i < 6; i++) {
-        pthread_create(&threads[i], NULL, search_load, &repetitions);
-    }
-
-    for (int i = 0; i < 6; i++) {
-        pthread_join(threads[i], NULL);
-    }
+    //fill_file(filename); 
+    load_data_from_file(filename, repetitions); 
 
     return 0;
 }
+
