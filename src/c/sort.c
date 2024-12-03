@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "../include/sort.h"
+#include "../include/utils.h"
 
-#define ARRAY_SIZE 100
+#define ARRAY_SIZE 10
 
 
 void print_arr(int arr[]){
@@ -73,10 +74,11 @@ void merge_sort(int arr[], int left, int right) {
     }
 }
 
-void* sort_load(void* arg) {
-    int repetitions = *((int*)arg);
+void sort_load(int reps) {
+    // params * p = (params *)arg;
+    // int repetitions = p->reps;
     
-    for (int r = 0; r < repetitions; r++) {
+    for (int r = 0; r < reps; r++) {
         int* arr = (int*)malloc(ARRAY_SIZE * sizeof(int));
         
         // Инициализация массива случайными числами
@@ -87,20 +89,23 @@ void* sort_load(void* arg) {
         free(arr);
     }
     
-    return NULL;
+    // return NULL;
 }
 
-void start_bench(int reps) {
-    pthread_t threads[6]; 
-
-    for (int i = 0; i < 4; i++) {
-        pthread_create(&threads[i], NULL, sort_load, &reps);
+void *start_bench(void * arg) {
+    // params * p = (params *)arg;
+    int r = atoi(arg);
+    printf("r=%d", r);
+    sort_load(r);
+    /*
+    pthread_t threads[5]; 
+    
+    
+    for (int i = 0; i < 5; i++) {
+        pthread_create(&threads[i], NULL, sort_load, r);
     }
-
-    for (int i = 0; i < 4; i++) {
-        pthread_join(threads[i], NULL);
-    }
-
-}
+    pthread_exit(NULL);
+    */
+}   
 
 

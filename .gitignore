@@ -1,13 +1,4 @@
-cmake*
-CMakeCache.txt
-Makefile
-./script.sh
 CMakeFiles
 build
-test_sort
-bench
-*.out
-./shell
 data.txt
-build
-bench 
+.vscode

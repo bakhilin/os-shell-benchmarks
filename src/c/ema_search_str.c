@@ -11,10 +11,15 @@ int main(int argc, char *argv[]) {
     }
 
     int repetitions = atoi(argv[1]);  
-    const char *filename = argv[2];  
+    char *filename = argv[2];  
     
     //fill_file(filename); 
-    load_data_from_file(filename, repetitions); 
+
+    params p;
+    p.filename = filename;
+    p.reps = repetitions;
+    
+    load_data_from_file((void *)&p); 
 
     return 0;
 }
