@@ -9,6 +9,7 @@
 #include <sys/resource.h>
 #include <sys/time.h>
 
+#define MAX_PIPES 5
 #define MAX_ARG_LEN 100
 #define MAX_CMD_LEN 1024
 #define STRING_LENGTH 20
@@ -51,29 +52,74 @@ void start() {
 }
 
 void exec_cmd(char *cmd) {
+    char * commands[MAX_PIPES];
+    int count_cmd = 0;
     char *args[MAX_ARG_LEN];
     __pid_t pid;
     int status;
 
-    args[0] = strtok(cmd, " \n");
-    int i = 1;
-
-    while ((args[i] = strtok(NULL, " \n")) != NULL) {
-        i++;
+    commands[count_cmd] = strtok(cmd, "|");
+    while (commands[count_cmd] != NULL && count_cmd < MAX_PIPES - 1) {
+        count_cmd++;
+        commands[count_cmd] = strtok(NULL, "|");
     }
 
-    pid = fork();
-    if (pid == -1) {
-        perror("fork failed");
-        return;
+    int pipe_fd[2 * (count_cmd - 1)];
+    for (int i = 0; i < count_cmd - 1; i++) {
+        if (pipe(pipe_fd + i * 2) == -1) {
+            perror("pipe failed");
+            exit(EXIT_FAILURE);
+        }
     }
 
-    if (pid == 0) { 
-        execvp(args[0], args);
-        perror("exec failed"); 
-        exit(EXIT_FAILURE); 
-    } else { 
-        waitpid(pid, &status, 0); 
+
+    for (size_t i = 0; i < count_cmd; i++)
+    {
+        pid = fork();
+        if (pid == -1) {
+            perror("fork failed");
+            return;
+        }
+
+        if (pid == 0) { 
+            if (i > 0) {
+                if (dup2(pipe_fd[(i - 1) * 2], STDIN_FILENO) == -1) {
+                    perror("dup2 failed");
+                    exit(EXIT_FAILURE);
+                }
+            }
+
+            if (i < count_cmd - 1) {
+                if (dup2(pipe_fd[i * 2 + 1], STDOUT_FILENO) == -1) {
+                    perror("dup2 failed");
+                    exit(EXIT_FAILURE);
+                }
+            }
+
+            for (int j = 0; j < 2 * (count_cmd - 1); j++) {
+                close(pipe_fd[j]);
+            }
+            
+            int arg_count = 0;
+            args[arg_count] = strtok(commands[i], " \n");
+            while (args[arg_count] != NULL && arg_count < MAX_ARG_LEN - 1) {
+                arg_count++;
+                args[arg_count] = strtok(NULL, " \n");
+            }
+            args[arg_count] = NULL; 
+
+            execvp(args[0], args);
+            perror("exec failed");
+            exit(EXIT_FAILURE); 
+        } 
+    }
+    
+    for (int i = 0; i < 2 * (count_cmd - 1); i++) {
+        close(pipe_fd[i]);
+    }
+    
+    for (int i = 0; i < count_cmd; i++) {
+        wait(NULL);
     }
 }
 
