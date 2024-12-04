@@ -23,7 +23,7 @@ TEST(merge_sort, merge_sort_test) {
 
 // Тест для многопоточной нагрузки
 TEST(start_bench, start_bench_test) {
-    EXPECT_NO_THROW(start_bench(10)); 
+    EXPECT_NO_THROW(sort_load(10)); 
 }
 
 // Тест для пустого массива

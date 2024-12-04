@@ -27,26 +27,26 @@ char *data[ARRAY_SIZE];
 
 void start() {
     char cmd[MAX_CMD_LEN];
-    while (1) {
+    for(;;){
         printf("bakhilin@shell: ");
 
-        if (fgets(cmd, sizeof(cmd), stdin) == NULL) {
+        if (fgets(cmd, sizeof(cmd), stdin) == NULL) 
             break;
-        } else {
-            if (strcmp(cmd, "exit\n") == 0) {
+        
+        if (strcmp(cmd, "exit\n") == 0) 
                 break;
-            }
-            struct timeval start_time, end_time;
-            gettimeofday(&start_time, NULL);
-            exec_cmd(cmd);
-            gettimeofday(&end_time, NULL);
+            
+        struct timeval start_time, end_time;
+        gettimeofday(&start_time, NULL);
+        exec_cmd(cmd);
+        gettimeofday(&end_time, NULL);
 
-            long seconds = end_time.tv_sec - start_time.tv_sec;
-            long microseconds = end_time.tv_usec - start_time.tv_usec;
-            long total_microseconds = seconds * 1000000 + microseconds;
+        const long seconds = end_time.tv_sec - start_time.tv_sec;
+        const long microseconds = end_time.tv_usec - start_time.tv_usec;
+        const long total_microseconds = seconds * 1000000 + microseconds;
 
-            printf("Time of execution: %ld.%06ld seconds\n", total_microseconds / 1000000, total_microseconds % 1000000);
-        }
+        printf("Time of execution: %ld.%06ld seconds\n", total_microseconds / 1000000, total_microseconds % 1000000);
+        
     }
 }
 

@@ -75,9 +75,7 @@ void merge_sort(int arr[], int left, int right) {
 }
 
 void sort_load(int reps) {
-    // params * p = (params *)arg;
-    // int repetitions = p->reps;
-    
+
     for (int r = 0; r < reps; r++) {
         int* arr = (int*)malloc(ARRAY_SIZE * sizeof(int));
         
@@ -89,23 +87,11 @@ void sort_load(int reps) {
         free(arr);
     }
     
-    // return NULL;
 }
 
 void *start_bench(void * arg) {
-    // params * p = (params *)arg;
-    int r = atoi(arg);
-    printf("r=%d", r);
-    sort_load(r);
-    /*
-    pthread_t threads[5]; 
-    
-    
-    for (int i = 0; i < 5; i++) {
-        pthread_create(&threads[i], NULL, sort_load, r);
-    }
-    pthread_exit(NULL);
-    */
+    int reps = atoi((const char*)arg);
+    sort_load(reps);
 }   
 
 
