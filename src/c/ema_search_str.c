@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     int repetitions = atoi(argv[1]);  
     char *filename = argv[2];  
     
-    //fill_file(filename); 
+    // fill_file(filename); 
 
     params p;
     p.filename = filename;

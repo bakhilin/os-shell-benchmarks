@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 
 #define MAX_PIPES 5
 #define MAX_ARG_LEN 100
@@ -126,7 +127,7 @@ void exec_cmd(char *cmd) {
 
 void* search_load(void* arg) {
     ThreadData* data = (ThreadData*)arg;
-    char target[STRING_LENGTH] = "target"; 
+    char target[STRING_LENGTH] = "string_12\n"; 
     int found = 0; 
 
     for (int r = 0; r < data->repetitions; r++) {
@@ -148,46 +149,56 @@ void fill_file(const char * filename) {
         }
         fclose(file);
     }
-
 }
+
+extern int lab2_open(const char * path);
+extern ssize_t lab2_read(int fd, void* buf, size_t count);
+extern int lab2_close(int fd);
 
 void* load_data_from_file(void * arg) {
     params * p = (params *)arg;
-    FILE * file = fopen(p->filename, "r");
+    int fd = lab2_open(p->filename); // Открываем файл по заданному пути
+    if (fd < 0) {
+        perror("Error opening file");
+        return NULL;
+    }
+
     char buffer[BLOCK_SIZE];
     pthread_t threads[6]; 
     int thread_count = 0;
 
-    while (1)
+    for (;;)
     {
-        size_t bytes_read = fread(buffer, sizeof(char), BLOCK_SIZE, file);
-        if (bytes_read == 0)
-        {
+        // Читаем данные из файла с использованием lab2_read
+        ssize_t bytes_read = lab2_read(fd, buffer, BLOCK_SIZE);
+        if (bytes_read < 0) {
+            perror("Error reading file");
             break;
         }
-
+        if (bytes_read == 0) {
+            break; 
+        }
+        
         ThreadData * data = malloc(sizeof(ThreadData));
-        data->block = malloc((bytes_read+1) * sizeof(char));
-
+        
+        if (!data) {
+            perror("Error allocating memory for ThreadData");
+            break;
+        }
+        
+        data->block = malloc((bytes_read + 1) * sizeof(char));
+        if (!data->block) {
+            perror("Error allocating memory for block");
+            free(data);
+            break;
+        }
         memcpy(data->block, buffer, bytes_read);
         data->block[bytes_read] = '0'; 
         data->repetitions = p->reps;
-
-        pthread_create(&threads[thread_count++], NULL, search_load, data);
-        if (thread_count >= 6) {
-            for (int i = 0; i < thread_count; i++) {
-                void* result;
-                pthread_join(threads[i], &result);
-            }
-            thread_count = 0; 
-        }
+        search_load(data);
     }
-
-    for (int i = 0; i < thread_count; i++) {
-        void* result;
-        pthread_join(threads[i], &result);
-    }
-
-    fclose(file);
     
+    if (lab2_close(fd) < 0) {
+        perror("Error closing file");
+    }
 }
